@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "مخطط التسجيل الذكي",
+  "short_name": "مخطط التسجيل",
+  "description": "مخطط تسجيل غير رسمي لطلاب جامعة الملك فيصل: جدول أسبوعي بلا تعارض من شعب Banner.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f1ef",
+  "theme_color": "#75112a",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

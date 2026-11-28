@@ -3,6 +3,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>مخطط التسجيل الذكي</title><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#75112a">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="مخطط التسجيل"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="مخطط تسجيل غير رسمي لطلاب جامعة الملك فيصل: جدول أسبوعي بلا تعارض من شعب Banner.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="مخطط التسجيل الذكي">
@@ -457,6 +460,19 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .ft-tg:hover{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 14%,transparent)}
 .ft-tg:active{transform:scale(.97)}
 .ft-tg svg{width:16px;height:16px}
+.ft-in{margin-inline-start:8px;font-family:inherit;cursor:pointer}
+@media (max-width:420px){.ft-in{margin:8px 0 0}}
+/* ===== التثبيت كتطبيق ===== */
+.inst{display:flex;gap:12px;align-items:flex-start;margin:0 0 16px;background:color-mix(in srgb,var(--ac) 6%,var(--sf));border-color:color-mix(in srgb,var(--ac) 22%,transparent);border-inline-start-color:var(--ac)}
+.inst[hidden]{display:none}
+.inst img{flex:none;width:40px;height:40px;border-radius:10px;box-shadow:var(--sh1)}
+.inst b{display:block}.inst span{display:block;color:var(--ink2);font-size:13.5px}
+.in-a{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-top:9px}.in-a .p{margin:0;min-height:38px;padding:7px 18px;font-size:14px}
+.is-l{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;counter-reset:is}
+.is-l li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--ln2);font-size:14px;line-height:1.6;counter-increment:is}
+.is-l li:before{content:counter(is);flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ps);color:var(--ac);font-weight:700;font-size:12.5px}
+.is-l svg{width:18px;height:18px;vertical-align:-4px;color:var(--ac)}
+.is-n{margin:12px 0 0;font-size:13px;color:var(--mu);line-height:1.7}
 
 /* ===== 11) نافذة المتطلب الناقص ===== */
 #pv{position:fixed;z-index:60;width:min(344px,calc(100vw - 24px));padding:15px 15px 13px;
@@ -851,6 +867,36 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .tr-bmk{display:inline-flex;align-items:center;gap:6px;margin:4px 0;padding:8px 16px;border-radius:12px;background:var(--acf);color:var(--acfi)!important;font-weight:700;text-decoration:none!important;cursor:grab;box-shadow:var(--sh2)}
 .tr-bmk:active{cursor:grabbing}
 .tr-tx .tr-ph{display:block;margin-top:6px;padding:7px 10px;border-radius:10px;background:var(--erb);color:var(--er);font-size:13px}
+.m-ph{position:relative;height:184px;border-radius:16px;background:var(--sf);border:1px solid var(--ln);box-shadow:var(--sh2);overflow:hidden;font-size:11px}
+.m-ph>.s{position:absolute;inset:0;transition:opacity .35s,transform .35s var(--ez)}
+.m-ph>.s.off{opacity:0;transform:scale(.95);pointer-events:none}
+.m-ph .tb{display:flex;align-items:center;gap:6px;padding:7px 8px;background:var(--bg2)}
+.m-ph .ad{flex:1;padding:3px 10px;border-radius:999px;background:var(--sf);color:var(--mu);direction:ltr;text-align:left;font-size:10.5px;white-space:nowrap;overflow:hidden}
+.m-ph .dt{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font-weight:700;font-size:14px;line-height:1;color:var(--ink2);transition:background .2s}
+.m-ph .dt.on{background:var(--ln)}
+.m-ph .pl{padding:9px 10px}.m-ph .pl i{display:block;height:8px;margin:0 0 7px;border-radius:5px;background:var(--bg2)}
+.m-ph .pl i.h{height:30px;background:linear-gradient(140deg,var(--h1),var(--h2));opacity:.85}
+.m-ph .mn{position:absolute;top:32px;left:8px;width:148px;padding:4px;border-radius:10px;background:var(--sf);border:1px solid var(--ln);box-shadow:var(--sh3,0 10px 28px rgba(0,0,0,.18));
+ opacity:0;transform:scale(.85);transform-origin:top left;transition:opacity .2s,transform .25s var(--sp)}
+.m-ph .mn.on{opacity:1;transform:none}
+.m-ph .mn span{display:block;padding:5px 9px;border-radius:7px;color:var(--ink2)}
+.m-ph .mn span.k{font-weight:700;color:var(--ink)}.m-ph .mn span.k.hl{background:var(--ps);color:var(--ac)}
+.m-ph .sh{position:absolute;left:0;right:0;bottom:0;padding:10px 12px 12px;background:var(--sf);border-top:1px solid var(--ln);border-radius:14px 14px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.12);
+ display:flex;align-items:center;gap:9px;transform:translateY(105%);transition:transform .3s var(--ez)}
+.m-ph .sh.on{transform:none}
+.m-ph .sh img{width:30px;height:30px;border-radius:8px}.m-ph .sh b{flex:1;font-size:11.5px}
+.m-ph .sh em{padding:5px 12px;border-radius:999px;background:var(--acf);color:var(--acfi);font-weight:700}
+.m-ph .hm{background:linear-gradient(160deg,color-mix(in srgb,var(--h2) 30%,#6b7a99),color-mix(in srgb,var(--h1) 25%,#2e3550));display:grid;grid-template-columns:repeat(4,1fr);align-content:start;gap:12px 6px;padding:16px 14px}
+.m-ph .hm>i{justify-self:center;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.28)}
+.m-ph .hm .me{justify-self:center;display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;font-size:9.5px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.35);transform:scale(0);transition:transform .45s var(--sp)}
+.m-ph .hm .me.on{transform:none}.m-ph .hm .me img{width:36px;height:36px;border-radius:10px;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.m-ph .ap{display:flex;flex-direction:column;gap:9px;padding:0;background:var(--bg)}
+.m-ph .ap .m-hero{border-radius:0 0 14px 14px;padding:16px 14px 14px}
+.m-ph .ap .m-hero b{display:block;font-size:13.5px}
+.m-ph .ap .ok{align-self:center;padding:4px 12px;border-radius:999px;background:var(--okb);color:var(--ok);font-weight:700;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .35s var(--sp)}
+.m-ph .ap .ok.on{opacity:1;transform:none}
+.m-ph .ap>i{display:block;height:8px;margin:0 12px;border-radius:5px;background:var(--bg2)}
+@media (max-height:700px){.m-ph{height:168px}}
 @media (max-height:700px){.tv{height:205px}.m-gr{height:148px}.tr-tx{font-size:14px;line-height:1.7}}
 @media (prefers-reduced-motion:reduce){#tour,.tr-pg i,.tv *{transition:none!important;animation:none!important}.tf{display:none}}
 </style>
@@ -880,6 +926,7 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 </nav>
 <div id="stale" class="msg e stale" role="status" hidden></div>
 <div id="imp" class="msg imp" role="status" hidden></div>
+<div id="inst" class="msg inst" hidden><img src="icon-192.png" alt="" width="40" height="40"><div><b>ثبّته على شاشتك الرئيسية</b><span>يفتح كتطبيق بلمسة، ويعمل حتى دون إنترنت بآخر شعب حُمّلت.</span><div class="in-a"><button type="button" class="p" data-ins>ثبّت التطبيق</button><button type="button" class="lnk" data-insx>ليس الآن</button></div></div></div>
 
 <section data-tb="1"><h2>المواد التي أنهيتها <small id="dn"></small></h2>
 <div class="pe-bar" id="peb"></div>
@@ -915,7 +962,7 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 <p class="sub">لم تبنِ جدولاً بعد. اضبط ساعاتك ثم اضغط «ابنِ الجدول»، والشعب تُحدَّث تلقائياً.</p>
 <div class="row"><button class="p" data-go="2">ابدأ بناء الجدول</button> <button data-go="4">أو تصفح الشعب وأضف موادك</button></div></section>
 
-<footer class="ft"><p><b>موقع غير رسمي</b> صنعه طالب هندسة كيميائية بمساعدة الذكاء الاصطناعي لمساعدة الطلبة. راجع خطتك الرسمية ونظام Banner قبل التسجيل.</p><a class="ft-tg" href="https://t.me/AMB0204" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 4.3 18.7 19c-.2 1-.8 1.2-1.6.8l-4.4-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.3-.3 0-.5-.5-.2L7.6 12.4l-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.4.2 1.2 1.1Z"/></svg><span>للاقتراحات والأخطاء&nbsp;·&nbsp;<bdi dir="ltr">@AMB0204</bdi></span></a></footer>
+<footer class="ft"><p><b>موقع غير رسمي</b> صنعه طالب هندسة كيميائية بمساعدة الذكاء الاصطناعي لمساعدة الطلبة. راجع خطتك الرسمية ونظام Banner قبل التسجيل.</p><a class="ft-tg" href="https://t.me/AMB0204" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 4.3 18.7 19c-.2 1-.8 1.2-1.6.8l-4.4-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.3-.3 0-.5-.5-.2L7.6 12.4l-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.4.2 1.2 1.1Z"/></svg><span>للاقتراحات والأخطاء&nbsp;·&nbsp;<bdi dir="ltr">@AMB0204</bdi></span></a><button type="button" class="ft-tg ft-in" data-ins hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7M9 11l3 3 3-3M10 18.5h4"/></svg><span>ثبّته كتطبيق</span></button></footer>
 
 <div id="fb" hidden><span class="fbt">الساعات: <span id="fu">0</span> / <span id="fc">0</span></span><div class="fbar"><i id="ff"></i></div></div>
 <script>
@@ -1301,7 +1348,38 @@ async function pickSecs(){await LOCREADY;const s=SRVJ,l=LOCJ;
  if(l&&(!s||tms(l)>tms(s)))applySecs(l,'local');
  else if(s){applySecs(s,'server');if(l){LOCJ=null;IDB.del('secs')}}
  else fail()}
-fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){if(!j.updated_at&&!j.updated&&lm)j.updated_at=new Date(lm).toISOString();SRVJ=j}pickSecs()}).catch(()=>pickSecs());
+let LASTF=0;
+function loadSecs(again){LASTF=Date.now();return fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){if(!j.updated_at&&!j.updated&&lm)j.updated_at=new Date(lm).toISOString();
+  /* عند العودة للتطبيق: لا نعيد الرسم إن لم تتغير الشعب */
+  if(again&&META.src=='server'&&j.checked_at==META.checked_at&&j.updated_at==META.updated_at)return;SRVJ=j}if(!again||SRVJ)pickSecs()}).catch(()=>{if(!again)pickSecs()})}
+loadSecs();
+/* التطبيق المثبّت قد يبقى مفتوحاً أياماً: نفحص الشعب عند العودة إليه بعد نصف ساعة */
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState=='visible'&&SECS.length&&Date.now()-LASTF>18e5)loadSecs(1)});
+
+/* ===== التثبيت كتطبيق ===== */
+const STANDALONE=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1);
+let BIP=null;
+if('serviceWorker' in navigator&&(location.protocol=='https:'||location.hostname=='localhost'||location.hostname=='127.0.0.1'))
+ addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+function insUI(){const st=STANDALONE();document.querySelectorAll('.ft-in').forEach(b=>b.hidden=st);
+ let vis=0,no=0;try{vis=+localStorage.getItem('kuVis')||0;no=localStorage.getItem('kuInst')=='0'}catch(e){}
+ const tch=matchMedia('(pointer:coarse)').matches;
+ $('inst').hidden=st||no||vis<2||!tch||!(BIP||IOS)}
+try{localStorage.setItem('kuVis',(+localStorage.getItem('kuVis')||0)+1)}catch(e){}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();BIP=e;insUI()});
+addEventListener('appinstalled',()=>{BIP=null;try{localStorage.setItem('kuInst','0')}catch(e){}insUI();toast('تم تثبيت التطبيق ✓ تجده على شاشتك الرئيسية')});
+insUI();
+const SHI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="زر المشاركة"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function insHelp(){PV={v:'ins'};pmShow();
+ const st=IOS?['افتح الموقع في <b>Safari</b>.',`اضغط زر المشاركة ${SHI} أسفل الشاشة.`,'اختر <b>«إضافة إلى الشاشة الرئيسية»</b> ثم <b>«إضافة»</b>.']:
+  matchMedia('(pointer:coarse)').matches?['افتح قائمة المتصفح <b>⋮</b>.','اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.','أكّد بـ <b>«تثبيت»</b>.']:
+  ['اضغط أيقونة التثبيت في نهاية شريط العنوان، أو افتح قائمة المتصفح <b>⋮</b>.','اختر <b>«تثبيت مخطط التسجيل»</b>.','أكّد بـ <b>«تثبيت»</b>.'];
+ pcd.innerHTML=pmHead('ثبّته كتطبيق','دقيقة واحدة')+`<ol class="is-l">${st.map(x=>`<li><span>${x}</span></li>`).join('')}</ol><p class="is-n">بعدها يظهر «مخطط التسجيل» بين تطبيقاتك، ويفتح دون شريط المتصفح، ويعمل حتى دون إنترنت بآخر شعب حُمّلت.</p>`;pcd.scrollTop=0}
+document.addEventListener('click',async e=>{const t=e.target.closest&&e.target.closest('[data-ins],[data-insx]');if(!t)return;
+ if(t.hasAttribute('data-insx')){try{localStorage.setItem('kuInst','0')}catch(x){}$('inst').hidden=true;toast('تجد زر التثبيت دائماً أسفل الصفحة');return}
+ if(BIP){const p=BIP;BIP=null;p.prompt();try{const r=await p.userChoice;if(r.outcome=='accepted'){try{localStorage.setItem('kuInst','0')}catch(x){}}}catch(x){}insUI()}
+ else insHelp()});
 setInterval(()=>SECS.length&&updNote(),6e4);
 function r3Keep(){const w=$('man'),k=fkey(w),o=[...w.querySelectorAll('details')].map(x=>x.open);r3();w.querySelectorAll('details').forEach((x,i)=>x.open=o[i]);frest(w,k)}
 document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
@@ -1815,7 +1893,7 @@ const MJ=['الهندسة الكيميائية','الهندسة المدنية',
 
 const ST=[
 {t:'أهلاً بك في مخطط التسجيل الذكي',
- x:'يبني لك جدول الترم من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. عشر خطوات قصيرة وتعرف كل شيء.',
+ x:'يبني لك جدول الترم من شعب <b>Banner</b> بلا تعارض، ويراعي خطتك ومتطلباتها. إحدى عشرة خطوة قصيرة وتعرف كل شيء.',
  h:()=>grid(1)+'<span class="m-ok">✓ بلا تعارض</span>',
  run:async(st,t)=>{await drop(st,t,230);await W8(250,t);g1(st,'.m-ok').classList.add('on');await W8(2600,t)},
  fin:st=>{ga(st,'.m-ev').forEach(e=>e.classList.remove('o'));g1(st,'.m-ok').classList.add('on')}},
@@ -1905,6 +1983,22 @@ const ST=[
   bx.classList.add('ok');bx.innerHTML='<b>تم تحديث الشعب من جهازك ✓</b><span>8,040 شعبة · الفصل الثاني 1448هـ</span>';
   fr.classList.remove('r');em.textContent='الشعب من جهازك · الآن';re(em,'fl');await W8(2400,t)},
  fin:st=>{const bx=g1(st,'.m-st');bx.classList.add('ok');bx.innerHTML='<b>تم تحديث الشعب من جهازك ✓</b><span>8,040 شعبة · الفصل الثاني 1448هـ</span>';g1(st,'.m-fr').classList.remove('r');g1(st,'.m-fr em').textContent='الشعب من جهازك · الآن'}},
+
+{t:'ثبّته كتطبيق',w:'أو زر «ثبّته كتطبيق» أسفل الصفحة',
+ x:'أضفه لشاشتك الرئيسية فيفتح كتطبيق بلمسة، ويعمل حتى <b>دون إنترنت</b> بآخر شعب حُمّلت. أندرويد: <b>⋮</b> ثم «تثبيت التطبيق». آيفون: زر المشاركة ثم «إضافة إلى الشاشة الرئيسية».',
+ h:()=>`<div class="m-ph">
+  <div class="s s1"><div class="tb"><span class="dt">⋮</span><span class="ad">pluto066.github.io/ku-planner</span></div><div class="pl"><i class="h"></i><i style="width:85%"></i><i style="width:65%"></i><i style="width:75%"></i></div>
+   <div class="mn"><span>علامة تبويب جديدة</span><span class="k">تثبيت التطبيق</span><span>مشاركة…</span></div>
+   <div class="sh"><img src="icon-192.png" alt=""><b>تثبيت «مخطط التسجيل»؟</b><em>تثبيت</em></div></div>
+  <div class="s s2 hm off"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span class="me"><img src="icon-192.png" alt="">مخطط التسجيل</span></div>
+  <div class="s s3 ap off"><div class="m-hero"><small>بلا شريط متصفح</small><b>مخطط التسجيل الذكي</b></div><span class="ok">✓ يعمل دون إنترنت</span><i style="width:80%"></i><i style="width:60%"></i></div></div>`,
+ run:async(st,t)=>{const dt=g1(st,'.dt'),mn=g1(st,'.mn'),k=g1(st,'.mn .k'),sh=g1(st,'.sh'),[s1,s2,s3]=ga(st,'.m-ph>.s'),me=g1(st,'.me');
+  await W8(400,t);await tap(st,dt,t);dt.classList.add('on');mn.classList.add('on');await W8(450,t);
+  await tap(st,k,t);k.classList.add('hl');await W8(200,t);mn.classList.remove('on');dt.classList.remove('on');await W8(200,t);sh.classList.add('on');await W8(500,t);
+  await tap(st,g1(st,'.sh em'),t);sh.classList.remove('on');hideF(st);await W8(350,t);
+  s1.classList.add('off');s2.classList.remove('off');await W8(450,t);me.classList.add('on');await W8(800,t);
+  await tap(st,me,t);await W8(150,t);hideF(st);s2.classList.add('off');s3.classList.remove('off');await W8(500,t);g1(st,'.ap .ok').classList.add('on');await W8(2200,t)},
+ fin:st=>{const[s1,s2,s3]=ga(st,'.m-ph>.s');s1.classList.add('off');s2.classList.add('off');s3.classList.remove('off');g1(st,'.ap .ok').classList.add('on')}},
 
 {t:'جاهز!',w:'زرّا ؟ والوضع أعلى الصفحة',
  x:'شارة «الشعب محدّثة» تخبرك متى فُحصت الشعب آخر مرة، وتُفحص كل 3 ساعات. وزر الوضع للفاتح والليلي، وزر <b>؟</b> يعيد هذه الجولة.<small>موقع غير رسمي، راجع Banner قبل التسجيل.</small>',

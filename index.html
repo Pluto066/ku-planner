@@ -615,6 +615,8 @@ footer.ft{margin:20px 0 0;padding:16px 14px 20px;border-top:1px solid var(--ln);
 .pm-f button{min-height:0;padding:4px 0;border:0;background:none;font-size:13px;font-weight:600;color:var(--ac);text-decoration:underline;text-underline-offset:3px}
 .pm-f button.er{color:var(--er)}
 @media (prefers-reduced-motion:reduce){#pem,.pm-cd,.pm-c{transition:none;animation:none}}
+/* آيفون يكبّر الصفحة عند لمس حقل خطه أصغر من 16px */
+@supports (-webkit-touch-callout:none){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
 /* ===== تفاصيل المادة ===== */
 .g label .ci{flex:none;align-self:center;display:grid;place-items:center;width:30px;height:30px;min-height:0;padding:0;margin-inline-start:2px;border-radius:50%;
  border:1px solid var(--ln);background:var(--sf);color:var(--mu);font:italic 700 14px/1 Georgia,'Times New Roman',serif}
@@ -1268,7 +1270,10 @@ function toTop(){const n=$('tabs'),s=[...document.querySelectorAll('#stale:not([
  window.scrollTo({top:y,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 function hero(u){$('hs1').textContent=D.size;$('hs2').textContent=u;$('hs3').textContent=Math.max(0,TOT-u);$('hbar').style.width=Math.min(100,u/TOT*100)+'%'}
 function upd(){const cap=+S.cap,o=$('out'),u=(R&&!o.hidden)?R.reduce((a,x)=>a+x.c.u,0):C.filter(c=>SEL.has(c.n)).reduce((a,c)=>a+c.u,0);$('fb').hidden=!cap;$('fu').textContent=u;$('fc').textContent=cap;$('ff').style.width=Math.min(100,u/(cap||1)*100)+'%'}
-function r1Keep(){const o=[...document.querySelectorAll('#lv details')].map(x=>x.open);r1();document.querySelectorAll('#lv details').forEach((x,i)=>x.open=o[i])}
+/* إعادة الرسم تستبدل العناصر، فنعيد التركيز إلى نظيره كي لا يضيع موضع لوحة المفاتيح */
+const fkey=w=>{const a=document.activeElement;if(!a||!w.contains(a))return null;for(const k of['d','all','ci','s','sall'])if(a.dataset[k]!=null)return`[data-${k}="${a.dataset[k]}"]`;return null};
+const frest=(w,k)=>{if(!k)return;const e=w.querySelector(k);e&&e.focus({preventScroll:true})};
+function r1Keep(){const w=$('lv'),k=fkey(w),o=[...w.querySelectorAll('details')].map(x=>x.open);r1();w.querySelectorAll('details').forEach((x,i)=>x.open=o[i]);frest(w,k)}
 let META={};const termTxt=t=>{const k={'10':'الأول','20':'الثاني','30':'الصيفي'}[String(t).slice(4,6)];return k?'الفصل '+k+' '+String(t).slice(0,4)+'هـ':''};
 const dfmt=(t,o)=>{const d=new Date(t);return isNaN(d)?'':d.toLocaleString('ar-u-ca-gregory',o)};
 function ago(t){const s=(Date.now()-new Date(t))/1e3;if(isNaN(s))return'';const f=new Intl.RelativeTimeFormat('ar',{numeric:'auto'});return s<90?'الآن':s<3600?f.format(-Math.round(s/60),'minute'):s<172800?f.format(-Math.round(s/3600),'hour'):f.format(-Math.round(s/86400),'day')}
@@ -1282,7 +1287,8 @@ function updNote(){const f=$('fr'),ref=META.checked_at||META.updated_at||(UPD&&U
  $('upd').innerHTML=[META.term?termTxt(META.term):'',updTxt(),META.checked_at?'آخر فحص '+ago(META.checked_at):'',SECS.length+' شعبة',META.src=='local'?'من جهازك':''].filter(Boolean).join(' · ')+' · <button type="button" class="lnk" data-upg>حدّثها من جهازك</button>'}
 function syncSx(){document.querySelectorAll('[data-sx]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sx==(S.sx||'11')))}
 try{localStorage.removeItem('cheSecs')}catch(e){}
-const fail=()=>{if(!SECS.length)$('upd').textContent='تعذر تحميل بيانات الشعب.'};
+let SLOAD=1,WANT=0;
+const fail=()=>{SLOAD=0;if(!SECS.length){$('upd').textContent='تعذر تحميل بيانات الشعب.';if(WANT){WANT=0;$('err').innerHTML=note('تعذر تحميل بيانات الشعب. تحقق من اتصالك ثم حدّث الصفحة.',1)}}};
 /* الشعب: من السيرفر، أو من جهاز الطالب إن كانت أحدث (جلبها بنفسه من Banner) */
 const IDB=(()=>{let p;const db=()=>p||(p=new Promise((r,j)=>{const q=indexedDB.open('ku',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)}));
  const tx=(m,f)=>db().then(d=>new Promise((r,j)=>{const t=d.transaction('kv',m),q=f(t.objectStore('kv'));t.oncomplete=()=>r(q&&q.result);t.onerror=()=>j(t.error)}));
@@ -1290,14 +1296,14 @@ const IDB=(()=>{let p;const db=()=>p||(p=new Promise((r,j)=>{const q=indexedDB.o
 let SRVJ=null,LOCJ=null;const LOCREADY=(window.indexedDB?IDB.get('secs'):Promise.resolve(null)).then(v=>{if(v&&v.secs&&v.secs.length&&(!LOCJ||tms(v)>tms(LOCJ)))LOCJ=v}).catch(()=>{});
 const tms=x=>+new Date(x&&(x.checked_at||x.updated_at)||0)||0;
 function applySecs(j,src){SECS=j.secs;UPD=j.updated||'';META={updated_at:j.updated_at||'',checked_at:j.checked_at||'',term:j.term||'',src};NMX=j.names||{};
- updNote();if(R||(S.r&&S.r.length)){R=null;restoreR()}if($('fb').dataset.t==4)brRender(1)}
+ updNote();SLOAD=0;if(WANT){WANT=0;$('err').innerHTML='';run()}else if(R||(S.r&&S.r.length)){R=null;restoreR()}if($('fb').dataset.t==4)brRender(1)}
 async function pickSecs(){await LOCREADY;const s=SRVJ,l=LOCJ;
  if(l&&(!s||tms(l)>tms(s)))applySecs(l,'local');
  else if(s){applySecs(s,'server');if(l){LOCJ=null;IDB.del('secs')}}
  else fail()}
 fetch('sections.json?'+Date.now()).then(r=>r.ok?r.json().then(j=>[j,r.headers.get('Last-Modified')]):[]).then(([j,lm])=>{if(j&&j.secs&&j.secs.length){if(!j.updated_at&&!j.updated&&lm)j.updated_at=new Date(lm).toISOString();SRVJ=j}pickSecs()}).catch(()=>pickSecs());
 setInterval(()=>SECS.length&&updNote(),6e4);
-function r3Keep(){const o=[...document.querySelectorAll('#man details')].map(x=>x.open);r3();document.querySelectorAll('#man details').forEach((x,i)=>x.open=o[i]);}
+function r3Keep(){const w=$('man'),k=fkey(w),o=[...w.querySelectorAll('details')].map(x=>x.open);r3();w.querySelectorAll('details').forEach((x,i)=>x.open=o[i]);frest(w,k)}
 document.addEventListener('click',e=>{const t=e.target,d=t.dataset;
  if(d.all){const cs=C.filter(c=>c.v==d.all),all=cs.every(c=>D.has(c.n));cs.forEach(c=>all?D.delete(c.n):D.add(c.n));save();r1Keep();$('lv').querySelectorAll('details')[lvls.indexOf(+d.all)].open=true}
  else if(d.sall){const cap=+S.cap;let used=C.filter(x=>SEL.has(x.n)).reduce((a,x)=>a+x.u,0),skip=0;
@@ -1380,7 +1386,7 @@ async function run0(){
  const err=$('err'),cap=+S.cap;err.innerHTML='';
  if(!cap){err.innerHTML=note('أدخل عدد الساعات المتاحة أولاً.',1);return}
  if(mode=='m'&&!SEL.size){err.innerHTML=note('اختر مادة واحدة على الأقل، أو استخدم الاختيار التلقائي.',1);return}
- const list=SECS.filter(s=>!s.sx||s.sx==(S.sx||'11'));if(!list.length){err.innerHTML=note('بيانات الشعب غير متوفرة حالياً، حاول لاحقاً.',1);return}
+ const list=SECS.filter(s=>!s.sx||s.sx==(S.sx||'11'));if(!list.length){if(SLOAD&&!SECS.length){WANT=1;err.innerHTML=note('جارٍ تحميل الشعب… سيُبنى جدولك تلقائياً حين يكتمل التحميل.');return}err.innerHTML=note('بيانات الشعب غير متوفرة حالياً، حاول لاحقاً.',1);return}
  IDX={};list.forEach(s=>(IDX[s.num]=IDX[s.num]||[]).push(s));
  const ov=new Set(S.ovOn?S.ov:[]),full=(FULL=$('st').value=='1'),auto=mode=='a',msgs=[],need={};
  for(const g in NEED)need[g]=Math.max(0,NEED[g]-C.filter(c=>c.g==g&&D.has(c.n)).length);
@@ -1464,7 +1470,7 @@ function bfilter(){const terms=nrm(BR.q).split(/\s+/).filter(Boolean),out=[],hb=
 const inR=crn=>!!R&&R.some(x=>x.s.crn==crn);
 function brows(secs){return secs.map(s=>{const on=inR(s.crn),ok=s.st=='متاحه';return `<label class="sr${on?' on':''}"><input type="checkbox" data-ad="${s.crn}"${on?' checked':''}><span class="sm"><b>${s.t||'مدرس غير محدد'}</b><small>شعبة ${s.sec} · CRN ${s.crn}${BR.scope=='a'&&!okMaj(s)?' · مخصصة لتخصصات أخرى':''}</small><span class="dy">${s.m.map(m=>`<i>${DN[m.d]} ${hm(m.s)}–${hm(m.e)}</i>`).join('')}</span></span><i class="chip ${ok?'ok':'no'}">${ok?'متاحة':s.st=='ممتلئة'?'ممتلئة':'غير متاحة'}</i></label>`}).join('')}
 const NEWC={'0921-004':'إجباري · دفعة 2026 فما فوق','0232-301':'اختياري · دفعة 2026 فما فوق','7434-102':'اختياري · دفعة 2026 فما فوق'};
-function bcard(r,open){const g=r.g,c=BY[g.n],u=c?c.u:g.secs[0].u,done=c&&D.has(c.n),pre=c&&!done&&!c.p.every(x=>D.has(x));
+function bcard(r,open){const g=r.g,c=BY[g.n],u=c?c.u:g.secs[0].u,done=c&&D.has(c.n),pre=c&&!done&&avl(c.n).s=='l';
  return `<details data-bn="${g.n}"${open?' open':''}><summary><b>${cname(g.n)||g.n}</b><small>${cname(g.n)?g.n+' · ':'اسم المادة غير متوفر · '}${u} س${c?' · '+lvn(c.v):''}</small><span class="cc"><i class="chip">${r.secs.length} شعبة</i>${R&&R.some(x=>x.c.n==g.n)?'<i class="chip ok">في جدولك</i>':''}${done?'<i class="chip">أنهيتها</i>':''}${NEWC[g.n]?`<i class="chip nw">${NEWC[g.n]}</i>`:''}${pre?`<button type="button" class="chip wr why" data-why="${g.n}" aria-haspopup="dialog" aria-expanded="false">متطلب ناقص <i><b>؟</b></i></button>`:''}</span></summary><div class="bsx">${open?brows(r.secs):''}</div></details>`}
 function brRender(keep){const L=$('bl');if(!SECS.length){L.innerHTML=note('جارٍ تحميل الشعب…');$('bm').hidden=true;return}
 
@@ -1535,13 +1541,13 @@ function html(n){
  const c=BY[n],ps=c.p,cs=c.c;
  const pr=ps.map(x=>{const dn=D.has(x),k=dn?'done':'miss',o=offered(x),b=BY[x];
   return `<li class="${k}"><span>${dn?'✓':'!'}</span><div><b>${nm(x)}</b><small>${x}${b?' · المستوى '+b.v:''}${dn?'':' · '+(o?o+' شعبة مطروحة':'غير مطروحة هذا الفصل')}</small>${dn||!o?'':`<button type="button" data-pvq="${x}">اعرض شعبها</button>`}</div><em>${dn?'أنهيتها':'لم تنهِها'}</em></li>`}).join('');
- const co=cs.map(x=>{const dn=D.has(x),inn=!!R&&R.some(y=>y.c.n==x),k=dn?'done':inn?'in':'miss';
-  return `<li class="${k}"><span>${dn?'✓':inn?'●':'+'}</span><div><b>${nm(x)}</b><small>${x}</small></div><em>${dn?'أنهيتها':inn?'في جدولك':'أضفها معها'}</em></li>`}).join('');
- const miss=ps.filter(x=>!D.has(x)).length;
+ const co=cs.map(x=>{const dn=D.has(x),inn=!!R&&R.some(y=>y.c.n==x),lk=!dn&&BY[x]&&avl(x).s=='l',k=dn?'done':inn?'in':'miss';
+  return `<li class="${k}"><span>${dn?'✓':inn?'●':lk?'!':'+'}</span><div><b>${nm(x)}</b><small>${x}${lk?' · تحتاج '+avm(avl(x)).map(nm).join('، '):''}</small></div><em>${dn?'أنهيتها':inn?'في جدولك':lk?'مقفلة':'أضفها معها'}</em></li>`}).join('');
+ const miss=ps.filter(x=>!D.has(x)).length,A=avl(n);
  return `<div class="pv-in"><div class="pv-h"><div><b>${c.a}</b><small>${c.n}</small></div><button type="button" class="pv-x" data-pvx aria-label="إغلاق">×</button></div>
- <p class="pv-t">${miss?(miss==1?'ينقصك متطلب سابق واحد':'ينقصك '+miss+' متطلبات سابقة')+' قبل تسجيل هذه المادة:':'متطلباتها السابقة'}</p><ul class="pv-l">${pr}</ul>
+ <p class="pv-t">${miss?(miss==1?'ينقصك متطلب سابق واحد':'ينقصك '+miss+' متطلبات سابقة')+' قبل تسجيل هذه المادة:':A.s=='l'?(ps.length?'متطلباتها السابقة منجزة، لكن متزامنها مقفل:':'لا متطلبات سابقة لها، لكن متزامنها مقفل:'):'متطلباتها السابقة'}</p>${ps.length?`<ul class="pv-l">${pr}</ul>`:''}
  ${cs.length?`<p class="pv-t">وتُسجَّل معها في نفس الفصل (أو بعد إنهائها):</p><ul class="pv-l">${co}</ul>`:''}
- <p class="pv-n">يمكنك إضافة شعبتها لجدولك للتجربة، لكن Banner سيرفض التسجيل قبل إنهاء المتطلب السابق.</p></div>`}
+ <p class="pv-n">يمكنك إضافة شعبتها لجدولك للتجربة، لكن Banner سيرفض التسجيل قبل ${miss?'إنهاء المتطلب السابق':'أن يُتاح لك متزامنها'}.</p></div>`}
 function place(){
  if(!anc||!document.contains(anc)){closePv();return}
  const r=anc.getBoundingClientRect(),W=innerWidth,H=innerHeight,w=pv.offsetWidth,h=pv.offsetHeight;
@@ -1611,7 +1617,8 @@ function rPe(){const b=$('peb');if(!b)return;const n=peCount();
 const pem=document.createElement('div');pem.id='pem';pem.hidden=true;
 pem.innerHTML='<div class="pm-cd" role="dialog" aria-modal="true" aria-labelledby="pmt"></div>';document.body.appendChild(pem);
 const pcd=pem.firstChild;const pnm=x=>BY[x]?BY[x].a:(cname(x)||x);let PV=null,pmRet=null,pmOv='';
-function pmShow(){if(pem.hidden){pmRet=document.activeElement;pem.hidden=false;pmOv=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';requestAnimationFrame(()=>pem.classList.add('on'))}}
+function pmShow(){if(pem.hidden){pmRet=document.activeElement;pem.hidden=false;pmOv=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';
+ requestAnimationFrame(()=>{pem.classList.add('on');if(!pem.contains(document.activeElement)){const x=pcd.querySelector('.pm-x');x&&x.focus({preventScroll:true})}})}}
 function pmClose(){if(pem.hidden)return;PV=null;pem.classList.remove('on');document.documentElement.style.overflow=pmOv;
  setTimeout(()=>{if(!PV){pem.hidden=true;pcd.innerHTML=''}},matchMedia('(prefers-reduced-motion: reduce)').matches?0:200);pmRet&&document.contains(pmRet)&&pmRet.focus({preventScroll:true})}
 const pmHead=(t,s)=>`<div class="pm-h"><div><b id="pmt">${t}</b>${s?'<small>'+s+'</small>':''}</div><button type="button" class="pm-x" data-pm="x" aria-label="إغلاق">×</button></div>`;
@@ -1677,12 +1684,14 @@ function pmVals(){const a=$('pma').value.trim(),u=+$('pmu').value;
 /* هل تُسجَّل الآن؟ المتطلبات السابقة منجزة، وكل متزامن غير منجز متاح هو أيضاً */
 function avl(x,sn){if(D.has(x))return{s:'d'};const y=BY[x],m=y.p.filter(z=>BY[z]&&!D.has(z));if(m.length)return{s:'l',m};
  sn=sn||new Set();sn.add(x);for(const z of y.c.filter(z=>BY[z]&&!D.has(z)&&!sn.has(z))){const r=avl(z,sn);if(r.s=='l')return{s:'l',co:z,r}}return{s:'a'}}
+/* أصل القفل: المتطلبات السابقة الناقصة في آخر السلسلة */
+const avm=r=>{while(r&&!r.m&&r.r)r=r.r;return r&&r.m||[]};
 function pmInfo(n,h){const c=BY[n];if(!c)return pmClose();PV={v:'i',n,h:h||[]};pmShow();
  const rv=revMap(),dir=(rv[n]||[]).filter(x=>BY[x]),all=downOf(n,rv),pre=c.p.filter(x=>BY[x]),co=c.c.filter(x=>BY[x]),miss=pre.filter(x=>!D.has(x));
  const row=(x,ic,cl,sub)=>{const y=BY[x];return`<button type="button" class="pi-r" data-pmi="${x}"><i class="${cl}" aria-hidden="true">${ic}</i><span>${esc(y.a)}<small>${x} · ${lvn(y.v)}${sub?' · '+sub:''}</small></span></button>`};
  const sec=(t,s,b)=>`<div class="pm-s"><h4>${t}${s?'<small>'+s+'</small>':''}</h4>${b}</div>`;
  const A=avl(n),q=x=>'«'+esc(pnm(x))+'»',qs=a=>a.map(q).join(' و'),cs=co.filter(x=>!D.has(x)),
-  cw=A.co&&(A.r.m?`${q(A.co)} تُسجَّل معها، وهي تحتاج ${qs(A.r.m)} أولاً.`:`${q(A.co)} تُسجَّل معها، وهي مقفلة الآن.`);
+  cw=A.co&&(A.r.m?`${q(A.co)} تُسجَّل معها، وهي تحتاج ${qs(A.r.m)} أولاً.`:`${q(A.co)} تُسجَّل معها، وهي مقفلة حتى تُنجز ${qs(avm(A))}.`);
  const st=D.has(n)?'<p class="pi-st ok">✓ أنجزتها</p>':miss.length?`<p class="pi-st no">مقفلة · ينقصك ${miss.length==1?'متطلب واحد':miss.length==2?'متطلبان':miss.length+' متطلبات'}</p>`:
   A.s=='l'?`<p class="pi-st no">مقفلة · بسبب متزامنها</p><p class="pi-why">${cw}</p>`:`<p class="pi-st go">متاحة لك الآن</p>${cs.length?`<p class="pi-why go">سجّلها مع ${qs(cs)}، أو بعد إنجاز${cs.length==2?'هما':'ها'}.</p>`:''}`;
  let of='';if(!D.has(n)&&SECS.length){const f=secsFor(c,1);of=`<p class="pi-of">${f.mine?(f.good.filter(s=>s.st=='متاحه').length?`<b>مطروحة هذا الفصل</b> · ${f.mine} شعبة`:`مطروحة هذا الفصل · ${f.mine} شعبة، كلها ممتلئة أو مغلقة`):'غير مطروحة هذا الفصل'}</p>`}
